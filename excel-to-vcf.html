@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Excel 联系人转 VCF</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+  <style>
+    :root {
+      --bg: #f6f3ec;
+      --panel: rgba(255, 253, 248, 0.93);
+      --ink: #152b2c;
+      --muted: #65706b;
+      --accent: #087f72;
+      --accent-dark: #065f56;
+      --line: #ded9cf;
+      --warn: #a2461e;
+      --shadow: 0 18px 45px rgba(21, 43, 44, 0.09);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "Microsoft YaHei UI", "PingFang SC", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 82% 8%, #d1eee5 0, transparent 31%),
+        radial-gradient(circle at 2% 80%, #eadabd 0, transparent 34%),
+        var(--bg);
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 52px 20px 34px;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 10px 0 9px;
+      font-family: Georgia, "STSong", serif;
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.12;
+    }
+
+    .intro {
+      max-width: 650px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .badge {
+      flex-shrink: 0;
+      padding: 10px 14px;
+      border: 1px solid #c9ddd6;
+      border-radius: 999px;
+      color: var(--accent-dark);
+      background: #edfaf6;
+      font-size: 13px;
+    }
+
+    .panel {
+      border: 1px solid rgba(222, 217, 207, .9);
+      border-radius: 20px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .upload {
+      display: grid;
+      place-items: center;
+      min-height: 190px;
+      border: 2px dashed #bdcabf;
+      border-radius: 15px;
+      background: rgba(248, 247, 241, .8);
+      text-align: center;
+      transition: .2s ease;
+      cursor: pointer;
+    }
+
+    .upload.dragover {
+      border-color: var(--accent);
+      background: #ecf8f3;
+      transform: translateY(-1px);
+    }
+
+    .upload strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .upload span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    #fileInput { display: none; }
+
+    .section {
+      margin-top: 22px;
+      display: none;
+    }
+
+    .section.visible { display: block; }
+
+    .status {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .status-text {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .status-text b { color: var(--ink); }
+
+    .mapping {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(172px, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    label.field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px 34px 10px 11px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      max-height: 330px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      white-space: nowrap;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 11px 13px;
+      border-bottom: 1px solid #efece4;
+      text-align: left;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      color: var(--accent-dark);
+      background: #eef8f4;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 19px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .primary {
+      color: #fff;
+      background: var(--accent);
+    }
+
+    .primary:hover { background: var(--accent-dark); }
+
+    .secondary {
+      color: var(--accent-dark);
+      background: #e6f3ee;
+    }
+
+    button:disabled {
+      opacity: .48;
+      cursor: not-allowed;
+    }
+
+    #message {
+      margin: 0;
+      color: var(--warn);
+      font-size: 13px;
+    }
+
+    .note {
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.75;
+    }
+
+    @media (max-width: 700px) {
+      .page { padding-top: 32px; }
+      header { display: block; }
+      .badge { display: inline-block; margin-top: 16px; }
+      .panel { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div>
+        <div class="eyebrow">Contact Exporter</div>
+        <h1>Excel 联系人转 VCF</h1>
+        <p class="intro">上传联系人表格，核对列对应关系，一键生成可导入手机通讯录、Outlook 或其他联系人应用的 VCF 文件。</p>
+      </div>
+      <div class="badge">vCard 3.0 / UTF-8</div>
+    </header>
+
+    <section class="panel">
+      <label class="upload" id="dropZone" for="fileInput">
+        <div>
+          <strong>选择或拖放联系人文件</strong>
+          <span>支持 .xlsx、.xls、.csv；默认读取第一个工作表<br>第一行应为字段名称，例如：姓名、手机、邮箱、公司</span>
+        </div>
+        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv">
+      </label>
+      <div class="actions">
+        <button class="secondary" id="sampleButton" type="button">加载示例联系人</button>
+      </div>
+
+      <div class="section" id="resultSection">
+        <div class="status">
+          <div class="status-text" id="statusText"></div>
+          <button class="secondary" id="resetButton" type="button">重新选择</button>
+        </div>
+
+        <div class="mapping" id="mapping"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead id="previewHead"></thead>
+            <tbody id="previewBody"></tbody>
+          </table>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="downloadButton" type="button">导出 VCF 文件</button>
+          <p id="message" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <p class="note">
+        建议表格中至少包含“姓名”和“手机号”。支持自动识别：姓名、姓、名、手机、电话、邮箱、公司、职位、地址、生日、备注、网址等常见列名。
+        上传的内容仅在当前浏览器中处理，不会由本页面上传到服务器。
+      </p>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const fields = [
+        { key: "fullName", label: "姓名", aliases: ["姓名", "名字", "联系人", "name", "fullname", "displayname", "称呼"] },
+        { key: "familyName", label: "姓", aliases: ["姓", "姓氏", "lastname", "familyname", "surname"] },
+        { key: "givenName", label: "名", aliases: ["名", "firstname", "givenname"] },
+        { key: "mobile", label: "手机", aliases: ["手机", "手机号", "手机号码", "移动电话", "mobile", "cell", "cellphone", "phone"] },
+        { key: "phone", label: "其他电话", aliases: ["电话", "电话号码", "座机", "工作电话", "tel", "telephone", "workphone"] },
+        { key: "email", label: "邮箱", aliases: ["邮箱", "电子邮箱", "邮件", "email", "emailaddress", "e-mail"] },
+        { key: "company", label: "公司", aliases: ["公司", "单位", "组织", "company", "organization", "org"] },
+        { key: "title", label: "职位", aliases: ["职位", "职务", "岗位", "title", "jobtitle", "position"] },
+        { key: "address", label: "地址", aliases: ["地址", "联系地址", "住址", "address", "location"] },
+        { key: "birthday", label: "生日", aliases: ["生日", "出生日期", "birthday", "birthdate", "bday"] },
+        { key: "website", label: "网址", aliases: ["网址", "网站", "主页", "website", "url", "homepage"] },
+        { key: "note", label: "备注", aliases: ["备注", "说明", "note", "notes", "remark", "memo"] }
+      ];
+
+      const state = { headers: [], rows: [], fileName: "" };
+      const fileInput = document.getElementById("fileInput");
+      const dropZone = document.getElementById("dropZone");
+      const resultSection = document.getElementById("resultSection");
+      const statusText = document.getElementById("statusText");
+      const mapping = document.getElementById("mapping");
+      const previewHead = document.getElementById("previewHead");
+      const previewBody = document.getElementById("previewBody");
+      const message = document.getElementById("message");
+      const downloadButton = document.getElementById("downloadButton");
+
+      const cleanHeader = value => String(value || "")
+        .trim().toLowerCase().replace(/[\s_\-()（）:：/\\]/g, "");
+
+      const valueAt = (row, header) => header ? String(row[header] ?? "").trim() : "";
+
+      function detectColumn(field) {
+        const matches = field.aliases.map(cleanHeader);
+        return state.headers.find(header => matches.includes(cleanHeader(header))) || "";
+      }
+
+      function parseCsv(text) {
+        const rows = [];
+        let row = [], cell = "", quoted = false;
+        for (let i = 0; i < text.length; i++) {
+          const char = text[i];
+          const next = text[i + 1];
+          if (char === '"') {
+            if (quoted && next === '"') {
+              cell += '"';
+              i++;
+            } else {
+              quoted = !quoted;
+            }
+          } else if (char === "," && !quoted) {
+            row.push(cell);
+            cell = "";
+          } else if ((char === "\n" || char === "\r") && !quoted) {
+            if (char === "\r" && next === "\n") i++;
+            row.push(cell);
+            if (row.some(value => value.trim())) rows.push(row);
+            row = [];
+            cell = "";
+          } else {
+            cell += char;
+          }
+        }
+        row.push(cell);
+        if (row.some(value => value.trim())) rows.push(row);
+        if (!rows.length) return [];
+        const headers = rows[0].map((header, index) => header.replace(/^\uFEFF/, "").trim() || `字段${index + 1}`);
+        return rows.slice(1).map(values => Object.fromEntries(headers.map((header, i) => [header, values[i] || ""])));
+      }
+
+      async function readFile(file) {
+        const extension = file.name.split(".").pop().toLowerCase();
+        if (extension === "csv") {
+          return parseCsv(await file.text());
+        }
+        if (!window.XLSX) {
+          throw new Error("Excel 解析组件尚未加载，请确认联网后刷新页面重试，或先另存为 CSV。");
+        }
+        const workbook = XLSX.read(await file.arrayBuffer(), { type: "array", cellDates: true });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        return XLSX.utils.sheet_to_json(sheet, { defval: "", raw: false });
+      }
+
+      async function handleFile(file) {
+        if (!file) return;
+        message.textContent = "";
+        try {
+          const rows = await readFile(file);
+          if (!rows.length) throw new Error("未读取到联系人数据，请确认文件第一行为表头且后面存在数据。");
+          state.rows = rows;
+          state.headers = Object.keys(rows[0]);
+          state.fileName = file.name.replace(/\.[^.]+$/, "");
+          render();
+        } catch (error) {
+          resultSection.classList.remove("visible");
+          message.textContent = error.message;
+          alert(error.message);
+        }
+      }
+
+      function render() {
+        statusText.innerHTML = `已读取 <b>${escapeHtml(state.fileName)}</b>，共 <b>${state.rows.length}</b> 位联系人。请核对字段后导出。`;
+        mapping.textContent = "";
+        fields.forEach(field => {
+          const label = document.createElement("label");
+          label.className = "field";
+          label.textContent = field.label;
+          const select = document.createElement("select");
+          select.dataset.field = field.key;
+          select.innerHTML = '<option value="">不导出此字段</option>';
+          state.headers.forEach(header => {
+            const option = document.createElement("option");
+            option.value = header;
+            option.textContent = header;
+            select.appendChild(option);
+          });
+          select.value = detectColumn(field);
+          label.appendChild(select);
+          mapping.appendChild(label);
+        });
+
+        previewHead.innerHTML = `<tr>${state.headers.map(header => `<th>${escapeHtml(header)}</th>`).join("")}</tr>`;
+        previewBody.innerHTML = state.rows.slice(0, 8).map(row =>
+          `<tr>${state.headers.map(header => `<td>${escapeHtml(row[header])}</td>`).join("")}</tr>`
+        ).join("");
+        resultSection.classList.add("visible");
+      }
+
+      function selectedColumns() {
+        return Object.fromEntries(
+          [...mapping.querySelectorAll("select")].map(select => [select.dataset.field, select.value])
+        );
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, char => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        }[char]));
+      }
+
+      function escapeVCard(value) {
+        return String(value || "")
+          .replace(/\\/g, "\\\\")
+          .replace(/\r?\n/g, "\\n")
+          .replace(/;/g, "\\;")
+          .replace(/,/g, "\\,");
+      }
+
+      function foldLine(line) {
+        const encoder = new TextEncoder();
+        if (encoder.encode(line).length <= 75) return line;
+        const pieces = [];
+        let current = "";
+        let limit = 75;
+        for (const char of line) {
+          if (encoder.encode(current + char).length > limit) {
+            pieces.push(current);
+            current = " " + char;
+            limit = 75;
+          } else {
+            current += char;
+          }
+        }
+        if (current) pieces.push(current);
+        return pieces.join("\r\n");
+      }
+
+      function normalizeBirthday(value) {
+        const date = String(value || "").trim();
+        const match = date.match(/^(\d{4})[年/-](\d{1,2})[月/-](\d{1,2})(?:日)?$/);
+        if (!match) return date;
+        return `${match[1]}-${match[2].padStart(2, "0")}-${match[3].padStart(2, "0")}`;
+      }
+
+      function buildVCard(row, columns, index) {
+        const fullName = valueAt(row, columns.fullName);
+        const familyName = valueAt(row, columns.familyName);
+        const givenName = valueAt(row, columns.givenName);
+        const mobile = valueAt(row, columns.mobile);
+        const phone = valueAt(row, columns.phone);
+        const company = valueAt(row, columns.company);
+        const fallbackName = fullName || [familyName, givenName].join("") || company || mobile || `联系人${index + 1}`;
+        const lines = [
+          "BEGIN:VCARD",
+          "VERSION:3.0",
+          `N:${escapeVCard(familyName)};${escapeVCard(givenName)};;;`,
+          `FN:${escapeVCard(fallbackName)}`
+        ];
+        const entries = [
+          [company, "ORG"],
+          [valueAt(row, columns.title), "TITLE"],
+          [mobile, "TEL;TYPE=CELL"],
+          [phone, "TEL;TYPE=VOICE"],
+          [valueAt(row, columns.email), "EMAIL;TYPE=INTERNET"],
+          [valueAt(row, columns.address), "ADR;TYPE=HOME:;;"],
+          [normalizeBirthday(valueAt(row, columns.birthday)), "BDAY"],
+          [valueAt(row, columns.website), "URL"],
+          [valueAt(row, columns.note), "NOTE"]
+        ];
+        entries.forEach(([value, key]) => {
+          if (!value) return;
+          const tail = key.startsWith("ADR") ? `${escapeVCard(value)};;;;` : escapeVCard(value);
+          lines.push(`${key}:${tail}`);
+        });
+        lines.push("END:VCARD");
+        return lines.map(foldLine).join("\r\n");
+      }
+
+      function downloadVcf() {
+        const columns = selectedColumns();
+        if (!columns.fullName && !columns.familyName && !columns.givenName && !columns.mobile) {
+          message.textContent = "请至少选择姓名、姓/名或手机中的一个字段。";
+          return;
+        }
+        const cards = state.rows
+          .filter(row => state.headers.some(header => valueAt(row, header)))
+          .map((row, index) => buildVCard(row, columns, index));
+        if (!cards.length) {
+          message.textContent = "没有可导出的联系人记录。";
+          return;
+        }
+        const blob = new Blob([cards.join("\r\n") + "\r\n"], { type: "text/vcard;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${state.fileName || "contacts"}.vcf`;
+        link.click();
+        URL.revokeObjectURL(url);
+        message.style.color = "var(--accent-dark)";
+        message.textContent = `已生成 ${cards.length} 位联系人的 VCF 文件。`;
+      }
+
+      fileInput.addEventListener("change", event => handleFile(event.target.files[0]));
+      document.getElementById("sampleButton").addEventListener("click", () => {
+        state.fileName = "联系人示例";
+        state.rows = [
+          { "姓名": "张小雨", "手机号": "13800138000", "邮箱": "xiaoyu@example.com", "公司": "远山科技", "职位": "客户经理", "地址": "上海市浦东新区示例路88号", "备注": "首选电话联系" },
+          { "姓名": "李明", "手机号": "13900139000", "邮箱": "liming@example.com", "公司": "海风设计", "职位": "设计师", "地址": "北京市朝阳区示例街16号", "备注": "" }
+        ];
+        state.headers = Object.keys(state.rows[0]);
+        message.textContent = "";
+        message.style.color = "var(--warn)";
+        render();
+      });
+      downloadButton.addEventListener("click", downloadVcf);
+      document.getElementById("resetButton").addEventListener("click", () => {
+        fileInput.value = "";
+        resultSection.classList.remove("visible");
+        message.textContent = "";
+        fileInput.click();
+      });
+      ["dragenter", "dragover"].forEach(type => dropZone.addEventListener(type, event => {
+        event.preventDefault();
+        dropZone.classList.add("dragover");
+      }));
+      ["dragleave", "drop"].forEach(type => dropZone.addEventListener(type, event => {
+        event.preventDefault();
+        dropZone.classList.remove("dragover");
+      }));
+      dropZone.addEventListener("drop", event => handleFile(event.dataTransfer.files[0]));
+    })();
+  </script>
+</body>
+</html>
