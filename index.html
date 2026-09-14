@@ -3,20 +3,166 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="云云工具箱：轻量、实用、打开即用的网页小工具集合。">
     <title>云云工具箱</title>
     <style>
-      body { max-width: 720px; margin: 60px auto; padding: 0 20px; font-family: system-ui, sans-serif; color: #1f2937; }
-      h1 { margin-bottom: 8px; }
-      p { color: #6b7280; }
-      a { display: block; margin: 14px 0; padding: 16px; color: #1d4ed8; background: #f3f6ff; border-radius: 10px; text-decoration: none; }
-      a:hover { background: #e5edff; }
+      :root { color-scheme: light; --ink: #172033; --muted: #667085; --primary: #5b5ce2; --primary-dark: #4143bd; --line: rgba(91, 92, 226, .14); --surface: rgba(255, 255, 255, .82); --shadow: 0 24px 70px rgba(65, 67, 189, .14); }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body { margin: 0; min-height: 100vh; color: var(--ink); font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; background: radial-gradient(circle at 10% 8%, rgba(137, 210, 255, .34), transparent 30rem), radial-gradient(circle at 90% 18%, rgba(194, 154, 255, .26), transparent 28rem), #f7f9ff; }
+      a { color: inherit; }
+      button, input { font: inherit; }
+      .shell { width: min(1160px, calc(100% - 36px)); margin: 0 auto; }
+      header { position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(255, 255, 255, .7); background: rgba(247, 249, 255, .8); backdrop-filter: blur(18px); }
+      .nav { min-height: 70px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+      .brand { display: inline-flex; align-items: center; gap: 11px; font-weight: 800; text-decoration: none; }
+      .brand-mark { display: grid; width: 38px; height: 38px; place-items: center; color: white; border-radius: 12px; background: linear-gradient(135deg, #655df0, #70c6ff); box-shadow: 0 10px 24px rgba(91, 92, 226, .24); }
+      .nav-links { display: flex; gap: 22px; }
+      .nav-links a { color: var(--muted); font-size: 14px; text-decoration: none; }
+      .nav-links a:hover { color: var(--primary); }
+      .hero { padding: 66px 0 36px; }
+      .hero-panel { display: grid; grid-template-columns: .9fr 1.1fr; min-height: 480px; overflow: hidden; border: 1px solid rgba(255, 255, 255, .9); border-radius: 32px; background: rgba(255, 255, 255, .72); box-shadow: var(--shadow); }
+      .hero-copy { position: relative; z-index: 2; padding: 66px 0 56px 58px; align-self: center; }
+      .eyebrow { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 18px; padding: 8px 12px; color: var(--primary-dark); font-size: 13px; font-weight: 700; border: 1px solid var(--line); border-radius: 999px; background: #f0f2ff; }
+      h1 { margin: 0; font-size: clamp(46px, 6vw, 76px); line-height: 1.02; letter-spacing: -.055em; }
+      .gradient-text { color: transparent; background: linear-gradient(100deg, #4547c8, #8268e8 55%, #168fca); background-clip: text; }
+      .hero-copy > p { max-width: 520px; margin: 22px 0 30px; color: var(--muted); font-size: 17px; line-height: 1.85; }
+      .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+      .button { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; gap: 8px; padding: 0 20px; font-weight: 700; border: 1px solid var(--line); border-radius: 14px; text-decoration: none; transition: transform .2s ease, box-shadow .2s ease; }
+      .button:hover { transform: translateY(-2px); }
+      .button.primary { color: white; border-color: transparent; background: linear-gradient(135deg, var(--primary), #7678f4); box-shadow: 0 13px 30px rgba(91, 92, 226, .24); }
+      .button.secondary { background: rgba(255, 255, 255, .85); }
+      .hero-art { display: block; min-width: 0; }
+      .hero-art img { width: 100%; height: 100%; object-fit: cover; object-position: 65% center; transition: transform .5s ease; }
+      .hero-art:hover img { transform: scale(1.025); }
+      .quick-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 18px; }
+      .fact { padding: 18px 20px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
+      .fact strong { display: block; margin-bottom: 4px; font-size: 20px; }
+      .fact span { color: var(--muted); font-size: 13px; }
+      .tools { padding: 68px 0 90px; scroll-margin-top: 76px; }
+      .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
+      .section-heading h2 { margin: 0 0 8px; font-size: clamp(30px, 4vw, 44px); letter-spacing: -.04em; }
+      .section-heading p { margin: 0; color: var(--muted); line-height: 1.7; }
+      .count { color: var(--primary); font-weight: 800; white-space: nowrap; }
+      .toolbar { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
+      .search { flex: 1 1 260px; min-height: 46px; padding: 0 16px; color: var(--ink); border: 1px solid var(--line); border-radius: 13px; outline: none; background: rgba(255, 255, 255, .9); }
+      .search:focus { border-color: rgba(91, 92, 226, .55); box-shadow: 0 0 0 4px rgba(91, 92, 226, .1); }
+      .filters { display: flex; flex-wrap: wrap; gap: 8px; }
+      .filter { min-height: 46px; padding: 0 16px; color: var(--muted); border: 1px solid var(--line); border-radius: 13px; cursor: pointer; background: rgba(255, 255, 255, .72); }
+      .filter.active { color: white; border-color: var(--primary); background: var(--primary); }
+      .tool-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+      .tool-card { display: flex; min-height: 300px; flex-direction: column; padding: 25px; border: 1px solid rgba(91, 92, 226, .12); border-radius: 22px; background: rgba(255, 255, 255, .86); box-shadow: 0 14px 38px rgba(53, 63, 118, .08); transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+      .tool-card:hover { transform: translateY(-5px); border-color: rgba(91, 92, 226, .32); box-shadow: 0 22px 46px rgba(53, 63, 118, .13); }
+      .tool-card[hidden] { display: none; }
+      .icon { display: grid; width: 54px; height: 54px; place-items: center; margin-bottom: 24px; font-size: 26px; border-radius: 17px; background: linear-gradient(135deg, #eef0ff, #e3f6ff); }
+      .tags { display: flex; gap: 7px; margin-bottom: 10px; }
+      .tag { padding: 5px 9px; color: var(--primary-dark); font-size: 11px; font-weight: 700; border-radius: 999px; background: #f0f1ff; }
+      .tool-card h3 { margin: 0; font-size: 21px; }
+      .tool-card p { margin: 12px 0 22px; color: var(--muted); font-size: 14px; line-height: 1.75; }
+      .tool-link { display: inline-flex; align-items: center; gap: 7px; margin-top: auto; color: var(--primary-dark); font-weight: 800; text-decoration: none; }
+      .tool-link:hover { gap: 11px; }
+      .empty { display: none; padding: 38px; color: var(--muted); text-align: center; border: 1px dashed var(--line); border-radius: 18px; }
+      .notice { display: grid; grid-template-columns: auto 1fr; gap: 16px; margin-top: 24px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: linear-gradient(135deg, rgba(238, 240, 255, .9), rgba(235, 249, 255, .9)); }
+      .notice b { display: block; margin-bottom: 5px; }
+      .notice p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+      footer { padding: 28px 0 38px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
+      .footer-row { display: flex; justify-content: space-between; gap: 20px; }
+      footer a { color: var(--primary-dark); text-decoration: none; }
+      @media (max-width: 850px) { .hero-panel { grid-template-columns: 1fr; } .hero-copy { padding: 46px 28px 18px; } .hero-art { height: 300px; } .hero-art img { object-position: 62% center; } .tool-grid { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 580px) { .shell { width: min(100% - 24px, 1160px); } .nav-links a:first-child { display: none; } .hero { padding-top: 26px; } .hero-panel { border-radius: 24px; } .hero-copy { padding: 36px 22px 14px; } .hero-copy > p { font-size: 15px; } .hero-art { height: 230px; } .quick-facts { grid-template-columns: 1fr; } .section-heading { align-items: start; flex-direction: column; } .tool-grid { grid-template-columns: 1fr; } .tool-card { min-height: 260px; } .footer-row { flex-direction: column; } }
     </style>
   </head>
   <body>
-    <h1>云云工具箱</h1>
-    <p>请选择需要使用的工具：</p>
-    <a href="freshman-helper.html">初见 · 新生认识助手</a>
-    <a href="yunyun-memory.html">云云记忆 · 姓名拼音标注</a>
-    <a href="excel-to-vcf.html">Excel 联系人转 VCF</a>
+    <header>
+      <nav class="shell nav" aria-label="主导航">
+        <a class="brand" href="index.html"><span class="brand-mark">云</span><span>云云工具箱</span></a>
+        <div class="nav-links"><a href="#about">关于</a><a href="#tools">全部工具</a></div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="shell hero" id="about">
+        <div class="hero-panel">
+          <div class="hero-copy">
+            <div class="eyebrow">✦ 轻量 · 实用 · 打开即用</div>
+            <h1>把小麻烦<br><span class="gradient-text">变成小工具</span></h1>
+            <p>这里收集云云制作的网页工具。无需安装软件，打开浏览器就能使用；更多学习、办公和生活工具会持续加入。</p>
+            <div class="actions">
+              <a class="button primary" href="#tools">开始使用 <span aria-hidden="true">↓</span></a>
+              <a class="button secondary" href="https://github.com/yunzhengxing/gitwork">查看源代码</a>
+            </div>
+          </div>
+          <a class="hero-art" href="#tools" aria-label="查看全部工具"><img src="assets/toolbox-hero.png" alt="漂浮在云端的透明数字工具箱插画"></a>
+        </div>
+        <div class="quick-facts" aria-label="网站特点">
+          <div class="fact"><strong>3 款</strong><span>当前可用工具</span></div>
+          <div class="fact"><strong>0 安装</strong><span>浏览器打开即用</span></div>
+          <div class="fact"><strong>持续更新</strong><span>新的小工具陆续加入</span></div>
+        </div>
+      </section>
+
+      <section class="shell tools" id="tools">
+        <div class="section-heading">
+          <div><h2>选择一个工具</h2><p>所有处理都在网页中完成，点击卡片即可开始。</p></div>
+          <span class="count" id="toolCount">共 3 款工具</span>
+        </div>
+        <div class="toolbar">
+          <input class="search" id="search" type="search" placeholder="搜索工具，例如：姓名、Excel……" aria-label="搜索工具">
+          <div class="filters" aria-label="工具分类">
+            <button class="filter active" type="button" data-filter="all">全部</button>
+            <button class="filter" type="button" data-filter="learning">学习</button>
+            <button class="filter" type="button" data-filter="office">办公</button>
+          </div>
+        </div>
+        <div class="tool-grid" id="toolGrid">
+          <article class="tool-card" data-category="learning" data-search="初见 新生 认识助手 班级 姓名 学生">
+            <div class="icon" aria-hidden="true">👋</div><div class="tags"><span class="tag">学习</span><span class="tag">班级</span></div>
+            <h3>初见 · 新生认识助手</h3><p>辅助整理新生信息，通过更直观的方式认识同学，适合新班级和团队破冰。</p>
+            <a class="tool-link" href="freshman-helper.html">打开工具 <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="tool-card" data-category="learning" data-search="云云记忆 姓名 拼音 标注 记忆 学生">
+            <div class="icon" aria-hidden="true">🧠</div><div class="tags"><span class="tag">学习</span><span class="tag">记忆</span></div>
+            <h3>云云记忆</h3><p>为姓名添加拼音标注，让点名、识记与复习更轻松，适合教师和班级管理场景。</p>
+            <a class="tool-link" href="yunyun-memory.html">打开工具 <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="tool-card" data-category="office" data-search="Excel 联系人 VCF 通讯录 手机 导入 转换">
+            <div class="icon" aria-hidden="true">📇</div><div class="tags"><span class="tag">办公</span><span class="tag">转换</span></div>
+            <h3>Excel 联系人转 VCF</h3><p>将 Excel 联系人表格转换为手机可导入的 VCF 文件，减少重复录入。</p>
+            <a class="tool-link" href="excel-to-vcf.html">打开工具 <span aria-hidden="true">→</span></a>
+          </article>
+        </div>
+        <div class="empty" id="empty">没有找到相关工具，试试其他关键词。</div>
+        <div class="notice"><span aria-hidden="true">🌱</span><div><b>工具箱还在成长</b><p>以后新增工具时，只需要复制一张工具卡片、修改名称与链接，就能自然扩展到这个首页中。</p></div></div>
+      </section>
+    </main>
+
+    <footer><div class="shell footer-row"><span>© 2026 云云工具箱 · 用简单网页解决日常问题</span><a href="https://github.com/yunzhengxing/gitwork">GitHub 项目主页 ↗</a></div></footer>
+    <script>
+      const cards = [...document.querySelectorAll('.tool-card')];
+      const search = document.querySelector('#search');
+      const filters = [...document.querySelectorAll('.filter')];
+      const count = document.querySelector('#toolCount');
+      const empty = document.querySelector('#empty');
+      let category = 'all';
+      function updateTools() {
+        const keyword = search.value.trim().toLowerCase();
+        let visible = 0;
+        cards.forEach((card) => {
+          const matchesCategory = category === 'all' || card.dataset.category === category;
+          const matchesKeyword = !keyword || card.dataset.search.toLowerCase().includes(keyword) || card.textContent.toLowerCase().includes(keyword);
+          card.hidden = !(matchesCategory && matchesKeyword);
+          if (!card.hidden) visible += 1;
+        });
+        count.textContent = `显示 ${visible} 款工具`;
+        empty.style.display = visible ? 'none' : 'block';
+      }
+      search.addEventListener('input', updateTools);
+      filters.forEach((button) => button.addEventListener('click', () => {
+        filters.forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+        category = button.dataset.filter;
+        updateTools();
+      }));
+    </script>
   </body>
 </html>
