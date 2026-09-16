@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="按一个或两个字段快速分类统计 Excel 数据，并导出人数、占比、合计和平均值。">
+  <title>表格分类统计助手｜云云子的工具箱</title>
+  <link rel="stylesheet" href="assets/tool-guide.css">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+  <script src="assets/toolbox-membership.js" defer></script>
+  <script src="assets/tool-guide.js" defer></script>
+  <style>
+    :root{color-scheme:light;--ink:#172033;--muted:#667085;--primary:#5b5ce2;--primary2:#168fca;--line:#e3e7f4;--soft:#f5f7ff;--ok:#087a55;--warn:#a15c00;--danger:#b42318;--shadow:0 20px 60px rgba(46,55,112,.12)}
+    *{box-sizing:border-box}body{margin:0;color:var(--ink);font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:radial-gradient(circle at 8% 5%,rgba(112,198,255,.25),transparent 30rem),radial-gradient(circle at 92% 14%,rgba(155,123,255,.2),transparent 28rem),#f7f9ff}button,input,select{font:inherit}button{cursor:pointer}.shell{width:min(1120px,calc(100% - 32px));margin:auto}.topbar{padding:18px 0}.topbar .shell{display:flex;align-items:center;justify-content:space-between;gap:16px}.brand,.back{color:var(--ink);font-weight:800;text-decoration:none}.brand{display:flex;align-items:center;gap:10px}.mark{display:grid;width:38px;height:38px;place-items:center;color:#fff;border-radius:12px;background:linear-gradient(135deg,var(--primary),#70c6ff)}.back{color:var(--primary);font-size:14px}.hero{padding:46px 0 28px}.hero-card{padding:45px;border:1px solid rgba(255,255,255,.9);border-radius:28px;background:rgba(255,255,255,.8);box-shadow:var(--shadow)}.eyebrow{display:inline-block;padding:7px 11px;color:#4547c8;font-size:13px;font-weight:800;border-radius:999px;background:#eef0ff}.hero h1{margin:18px 0 12px;font-size:clamp(36px,6vw,58px);letter-spacing:-.05em}.hero p{max-width:760px;margin:0;color:var(--muted);font-size:16px;line-height:1.8}.privacy{display:flex;gap:8px;align-items:center;margin-top:20px;color:var(--ok);font-size:13px;font-weight:700}.workspace{display:grid;gap:20px;padding:14px 0 80px}.panel{padding:28px;border:1px solid var(--line);border-radius:22px;background:rgba(255,255,255,.92);box-shadow:0 12px 34px rgba(53,63,118,.07)}.panel-head{display:flex;align-items:start;justify-content:space-between;gap:16px;margin-bottom:20px}.panel h2{margin:0 0 6px;font-size:22px}.panel-head p,.help{margin:0;color:var(--muted);font-size:13px;line-height:1.7}.step{display:grid;width:34px;height:34px;flex:none;place-items:center;color:#fff;font-weight:800;border-radius:11px;background:linear-gradient(135deg,var(--primary),#7c7ef2)}.upload{display:grid;place-items:center;min-height:190px;padding:24px;text-align:center;border:2px dashed #cbd1eb;border-radius:18px;background:var(--soft);transition:.2s}.upload.drag{border-color:var(--primary);background:#eff0ff}.upload strong{display:block;margin:10px 0 6px;font-size:17px}.upload p{margin:0 0 16px;color:var(--muted);font-size:13px}.button{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:0 18px;color:var(--ink);font-weight:800;border:1px solid var(--line);border-radius:12px;background:#fff}.button.primary{color:#fff;border-color:transparent;background:linear-gradient(135deg,var(--primary),#7375ed)}.button.ghost{color:var(--primary);background:#f3f4ff}.file-input{display:none}.file-info{display:none;margin-top:14px;padding:13px 15px;color:var(--ok);font-size:13px;font-weight:700;border-radius:12px;background:#ecfdf5}.file-info.show{display:block}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.field label{display:block;margin-bottom:7px;font-size:13px;font-weight:800}.field select{width:100%;min-height:44px;padding:0 12px;color:var(--ink);border:1px solid var(--line);border-radius:11px;background:#fff}.field select:focus{outline:3px solid rgba(91,92,226,.12);border-color:var(--primary)}.options{display:flex;flex-wrap:wrap;gap:12px;margin-top:17px}.check{display:flex;align-items:center;gap:8px;padding:10px 12px;color:var(--muted);font-size:13px;border:1px solid var(--line);border-radius:11px;background:var(--soft)}.check input{accent-color:var(--primary)}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.hidden{display:none!important}.status{margin-top:14px;padding:12px 14px;font-size:13px;border-radius:11px;background:var(--soft)}.status.error{color:var(--danger);background:#fff1f0}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}.stat{padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}.stat b{display:block;margin-bottom:4px;font-size:24px}.stat span{color:var(--muted);font-size:12px}.table-wrap{overflow:auto;max-height:560px;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap}th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line)}th{position:sticky;top:0;z-index:1;color:#3b3d87;background:#eef0ff}tbody tr:hover{background:#fafbff}.empty{text-align:center;color:var(--muted)}.note{margin-top:14px;color:var(--muted);font-size:12px;line-height:1.7}footer{padding:28px 0;color:var(--muted);font-size:12px;text-align:center;border-top:1px solid var(--line)}
+    @media(max-width:760px){.hero-card{padding:30px 22px}.panel{padding:22px 18px}.grid,.stats{grid-template-columns:1fr 1fr}.panel-head{align-items:start}.brand span:last-child{display:none}}
+    @media(max-width:480px){.grid,.stats{grid-template-columns:1fr}.hero{padding-top:20px}.hero-card{border-radius:22px}.actions .button{width:100%}}
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="shell"><a class="brand" href="index.html"><span class="mark">云</span><span>云云子的工具箱</span></a><a class="back" href="index.html">← 返回工具箱</a></div></header>
+  <main>
+    <section class="hero"><div class="shell"><div class="hero-card"><span class="eyebrow">第 10 款工具 · 免费使用</span><h1>表格分类统计助手</h1><p>不用学习数据透视表。选择“班级、性别、状态”等分类字段，就能统计人数和占比；再选择金额或分数列，还可以得到合计、平均值、最大值和最小值。</p><div class="privacy">🔒 表格只在当前浏览器中处理，不会上传服务器</div></div></div></section>
+    <section class="shell workspace">
+      <article class="panel">
+        <div class="panel-head"><div><h2>1. 导入表格</h2><p>支持 .xlsx、.xls 和 .csv；首次体验可先下载示例表格。</p></div><span class="step">1</span></div>
+        <label class="upload" id="dropZone"><span style="font-size:34px">📊</span><strong>拖入需要统计的表格</strong><p>或者点击下面的按钮选择文件</p><span class="button primary">选择表格</span><input class="file-input" id="fileInput" type="file" accept=".xlsx,.xls,.csv"></label>
+        <div class="file-info" id="fileInfo"></div>
+        <div class="actions"><button class="button ghost" id="sampleBtn" type="button">下载示例表格</button></div>
+      </article>
+
+      <article class="panel hidden" id="setupPanel">
+        <div class="panel-head"><div><h2>2. 确认表头与统计方式</h2><p>主要分类必选；二级分类和数值列都可以不选。</p></div><span class="step">2</span></div>
+        <div class="grid">
+          <div class="field"><label for="sheetSelect">工作表</label><select id="sheetSelect"></select></div>
+          <div class="field"><label for="headerSelect">表头所在行</label><select id="headerSelect"></select></div>
+          <div class="field"><label for="sortSelect">结果排序</label><select id="sortSelect"><option value="count">人数从多到少</option><option value="name">分类名称顺序</option><option value="sum">数值合计从大到小</option></select></div>
+          <div class="field"><label for="mainGroup">主要分类 *</label><select id="mainGroup"></select></div>
+          <div class="field"><label for="secondGroup">二级分类（可选）</label><select id="secondGroup"><option value="">不使用二级分类</option></select></div>
+          <div class="field"><label for="numberField">数值列（可选）</label><select id="numberField"><option value="">只统计人数和占比</option></select></div>
+        </div>
+        <div class="options"><label class="check"><input id="includeBlank" type="checkbox" checked> 将空白分类统计为“（空白）”</label></div>
+        <div class="actions"><button class="button primary" id="runBtn" type="button">生成统计结果</button></div>
+        <div class="status hidden" id="status"></div>
+      </article>
+
+      <article class="panel hidden" id="resultPanel">
+        <div class="panel-head"><div><h2>3. 核对并导出</h2><p id="resultText">统计已完成。</p></div><span class="step">3</span></div>
+        <div class="stats"><div class="stat"><b id="rowStat">0</b><span>参与统计的数据行</span></div><div class="stat"><b id="groupStat">0</b><span>分类组合</span></div><div class="stat"><b id="validStat">—</b><span>有效数值</span></div><div class="stat"><b id="sumStat">—</b><span>数值合计</span></div></div>
+        <div class="table-wrap"><table><thead id="resultHead"></thead><tbody id="resultBody"></tbody></table></div>
+        <div class="actions"><button class="button primary" id="exportBtn" type="button">导出统计 Excel</button><button class="button" id="rerunBtn" type="button">调整后重新统计</button></div>
+        <p class="note">提示：数值列里的文字、空白和无法识别的内容不会参与合计与平均值，但该行仍会计入人数。</p>
+      </article>
+    </section>
+  </main>
+  <footer>© 2026 云云子的工具箱 · 数据本地处理 · 请勿复制、镜像或转售</footer>
+  <script>
+    const $ = (selector) => document.querySelector(selector);
+    const state = { workbook: null, fileName: '', rows: [], headers: [], summary: [], usedRows: 0, numericName: '' };
+    const els = { fileInput: $('#fileInput'), dropZone: $('#dropZone'), fileInfo: $('#fileInfo'), setup: $('#setupPanel'), sheet: $('#sheetSelect'), header: $('#headerSelect'), main: $('#mainGroup'), second: $('#secondGroup'), number: $('#numberField'), sort: $('#sortSelect'), blank: $('#includeBlank'), status: $('#status'), result: $('#resultPanel'), head: $('#resultHead'), body: $('#resultBody') };
+    const clean = (v) => String(v ?? '').replace(/\s+/g, ' ').trim();
+    const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const fmt = (v) => Number(v).toLocaleString('zh-CN', { maximumFractionDigits: 4 });
+    function uniqueHeaders(row) {
+      const used = new Map();
+      return row.map((cell, i) => {
+        const base = clean(cell) || `未命名列${i + 1}`;
+        const count = (used.get(base) || 0) + 1; used.set(base, count);
+        return count === 1 ? base : `${base}_${count}`;
+      });
+    }
+    function detectHeader(rows) {
+      let best = 0, score = -1;
+      rows.slice(0, 15).forEach((row, i) => {
+        const filled = row.filter((v) => clean(v)).length;
+        const text = row.filter((v) => clean(v) && Number.isNaN(Number(clean(v)))).length;
+        const current = filled * 2 + text;
+        if (filled >= 2 && current > score) { score = current; best = i; }
+      });
+      return best;
+    }
+    function sheetRows(name) { return XLSX.utils.sheet_to_json(state.workbook.Sheets[name], { header: 1, raw: false, defval: '', blankrows: false }); }
+    function showStatus(message, error = false) { els.status.textContent = message; els.status.className = `status${error ? ' error' : ''}`; }
+    function hideStatus() { els.status.className = 'status hidden'; }
+    async function loadFile(file) {
+      if (!file) return;
+      try {
+        if (!window.XLSX) throw new Error('表格组件没有加载成功，请检查网络后刷新页面。');
+        const data = await file.arrayBuffer();
+        state.workbook = XLSX.read(data, { type: 'array' }); state.fileName = file.name;
+        els.sheet.innerHTML = state.workbook.SheetNames.map((name) => `<option>${esc(name)}</option>`).join('');
+        els.fileInfo.textContent = `已读取：${file.name}（${state.workbook.SheetNames.length} 个工作表）`; els.fileInfo.classList.add('show');
+        els.setup.classList.remove('hidden'); els.result.classList.add('hidden'); prepareSheet(); els.setup.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (error) { els.fileInfo.textContent = `读取失败：${error.message}`; els.fileInfo.classList.add('show'); }
+    }
+    function prepareSheet() {
+      const rows = sheetRows(els.sheet.value);
+      if (!rows.length) { showStatus('这个工作表没有可读取的数据。', true); return; }
+      const detected = detectHeader(rows);
+      els.header.innerHTML = rows.slice(0, Math.min(20, rows.length)).map((row, i) => `<option value="${i}" ${i === detected ? 'selected' : ''}>第 ${i + 1} 行：${esc(row.filter((v) => clean(v)).slice(0, 4).join(' ｜ ') || '空白')}</option>`).join('');
+      prepareColumns();
+    }
+    function prepareColumns() {
+      hideStatus();
+      const rows = sheetRows(els.sheet.value); const headerIndex = Number(els.header.value || 0);
+      state.headers = uniqueHeaders(rows[headerIndex] || []);
+      state.rows = rows.slice(headerIndex + 1).filter((row) => row.some((v) => clean(v))).map((row) => Object.fromEntries(state.headers.map((h, i) => [h, row[i] ?? ''])));
+      if (!state.headers.length || !state.rows.length) { showStatus('表头下面没有数据，请重新选择表头所在行。', true); return; }
+      const opts = state.headers.map((h) => `<option value="${esc(h)}">${esc(h)}</option>`).join('');
+      els.main.innerHTML = opts; els.second.innerHTML = `<option value="">不使用二级分类</option>${opts}`; els.number.innerHTML = `<option value="">只统计人数和占比</option>${opts}`;
+      showStatus(`已识别 ${state.headers.length} 列、${state.rows.length} 行数据。请选择统计方式。`);
+    }
+    function parseNumber(value) {
+      const raw = clean(value); if (!raw) return null;
+      const percent = raw.endsWith('%'); const normalized = raw.replace(/[,，￥¥元%\s]/g, '');
+      if (!normalized || !Number.isFinite(Number(normalized))) return null;
+      return percent ? Number(normalized) / 100 : Number(normalized);
+    }
+    function runSummary() {
+      const main = els.main.value, second = els.second.value, numeric = els.number.value;
+      if (!main) { showStatus('请先选择主要分类。', true); return; }
+      if (second && second === main) { showStatus('主要分类和二级分类不能选择同一列。', true); return; }
+      const groups = new Map(); let usedRows = 0;
+      state.rows.forEach((row) => {
+        let a = clean(row[main]), b = second ? clean(row[second]) : '';
+        if (!a && !els.blank.checked) return; if (!a) a = '（空白）'; if (second && !b) b = '（空白）';
+        usedRows += 1; const key = JSON.stringify([a, b]);
+        if (!groups.has(key)) groups.set(key, { main: a, second: b, count: 0, valid: 0, sum: 0, min: null, max: null });
+        const item = groups.get(key); item.count += 1;
+        if (numeric) { const n = parseNumber(row[numeric]); if (n !== null) { item.valid += 1; item.sum += n; item.min = item.min === null ? n : Math.min(item.min, n); item.max = item.max === null ? n : Math.max(item.max, n); } }
+      });
+      let summary = [...groups.values()].map((item) => ({ ...item, percent: usedRows ? item.count / usedRows : 0, average: item.valid ? item.sum / item.valid : null }));
+      if (els.sort.value === 'name') summary.sort((a,b) => a.main.localeCompare(b.main, 'zh-CN') || a.second.localeCompare(b.second, 'zh-CN'));
+      else if (els.sort.value === 'sum' && numeric) summary.sort((a,b) => b.sum - a.sum);
+      else summary.sort((a,b) => b.count - a.count || a.main.localeCompare(b.main, 'zh-CN'));
+      state.summary = summary; state.usedRows = usedRows; state.numericName = numeric;
+      render(main, second, numeric); hideStatus(); els.result.classList.remove('hidden'); els.result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    function render(main, second, numeric) {
+      const columns = [main, ...(second ? [second] : []), '人数', '占比', ...(numeric ? ['有效数值', `${numeric}合计`, `${numeric}平均值`, '最小值', '最大值'] : [])];
+      els.head.innerHTML = `<tr>${columns.map((c) => `<th>${esc(c)}</th>`).join('')}</tr>`;
+      els.body.innerHTML = state.summary.length ? state.summary.slice(0, 500).map((r) => `<tr><td>${esc(r.main)}</td>${second ? `<td>${esc(r.second)}</td>` : ''}<td>${r.count}</td><td>${(r.percent * 100).toFixed(2)}%</td>${numeric ? `<td>${r.valid}</td><td>${fmt(r.sum)}</td><td>${r.average === null ? '—' : fmt(r.average)}</td><td>${r.min === null ? '—' : fmt(r.min)}</td><td>${r.max === null ? '—' : fmt(r.max)}</td>` : ''}</tr>`).join('') : '<tr><td class="empty" colspan="9">没有可统计的数据</td></tr>';
+      const validTotal = state.summary.reduce((sum, r) => sum + r.valid, 0), sumTotal = state.summary.reduce((sum, r) => sum + r.sum, 0);
+      $('#rowStat').textContent = state.usedRows; $('#groupStat').textContent = state.summary.length; $('#validStat').textContent = numeric ? validTotal : '—'; $('#sumStat').textContent = numeric ? fmt(sumTotal) : '—';
+      $('#resultText').textContent = `已按“${main}${second ? ` + ${second}` : ''}”生成 ${state.summary.length} 个分类组合。${state.summary.length > 500 ? '页面只预览前 500 项，导出文件包含全部结果。' : ''}`;
+    }
+    function exportResult() {
+      if (!state.summary.length) return;
+      const main = els.main.value, second = els.second.value, numeric = state.numericName;
+      const output = state.summary.map((r) => ({ [main]: r.main, ...(second ? {[second]: r.second} : {}), '人数': r.count, '占比': r.percent, ...(numeric ? {'有效数值':r.valid,[`${numeric}合计`]:r.sum,[`${numeric}平均值`]:r.average ?? '', '最小值':r.min ?? '', '最大值':r.max ?? ''} : {}) }));
+      const ws = XLSX.utils.json_to_sheet(output); const range = XLSX.utils.decode_range(ws['!ref']);
+      for (let row = 1; row <= range.e.r; row++) { const cell = ws[XLSX.utils.encode_cell({r:row,c:second ? 3 : 2})]; if (cell) cell.z = '0.00%'; }
+      ws['!cols'] = Object.keys(output[0]).map((name) => ({ wch: Math.max(12, Math.min(28, name.length * 2 + 4)) }));
+      const info = XLSX.utils.aoa_to_sheet([['项目','内容'],['来源文件',state.fileName],['工作表',els.sheet.value],['主要分类',main],['二级分类',second || '未使用'],['数值列',numeric || '未使用'],['参与统计行数',state.usedRows],['生成时间',new Date().toLocaleString('zh-CN')]]);
+      const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, '统计汇总'); XLSX.utils.book_append_sheet(wb, info, '统计说明'); XLSX.writeFile(wb, `分类统计_${new Date().toISOString().slice(0,10)}.xlsx`);
+    }
+    function downloadSample() {
+      if (!window.XLSX) return alert('表格组件尚未加载，请稍后再试。');
+      const rows = [['学号','姓名','班级','性别','资助状态','金额'],['2026001','林晓云','一班','女','已通过',1200],['2026002','陈星河','一班','男','待审核',800],['2026003','周小雨','二班','女','已通过',1000],['2026004','赵明宇','二班','男','未申请',''],['2026005','许安然','一班','女','已通过',1500],['2026006','吴天乐','二班','男','待审核',900]];
+      const wb = XLSX.utils.book_new(); const ws = XLSX.utils.aoa_to_sheet(rows); ws['!cols'] = [{wch:14},{wch:12},{wch:10},{wch:8},{wch:12},{wch:10}]; XLSX.utils.book_append_sheet(wb, ws, '学生信息'); XLSX.writeFile(wb, '表格分类统计示例.xlsx');
+    }
+    els.fileInput.addEventListener('change', (e) => loadFile(e.target.files[0]));
+    ['dragenter','dragover'].forEach((name) => els.dropZone.addEventListener(name, (e) => { e.preventDefault(); els.dropZone.classList.add('drag'); }));
+    ['dragleave','drop'].forEach((name) => els.dropZone.addEventListener(name, (e) => { e.preventDefault(); els.dropZone.classList.remove('drag'); }));
+    els.dropZone.addEventListener('drop', (e) => loadFile(e.dataTransfer.files[0]));
+    els.sheet.addEventListener('change', prepareSheet); els.header.addEventListener('change', prepareColumns);
+    $('#runBtn').addEventListener('click', runSummary); $('#exportBtn').addEventListener('click', exportResult); $('#sampleBtn').addEventListener('click', downloadSample); $('#rerunBtn').addEventListener('click', () => els.setup.scrollIntoView({behavior:'smooth'}));
+  </script>
+</body>
+</html>

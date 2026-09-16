@@ -3,8 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="云云工具箱：轻量、实用、打开即用的网页小工具集合。">
-    <title>云云工具箱</title>
+    <meta name="description" content="云云子的工具箱：把日常小麻烦，变成打开即用的小工具。">
+    <title>云云子的工具箱</title>
+    <link rel="stylesheet" href="assets/tool-guide.css">
+    <script src="assets/toolbox-membership.js" defer></script>
+    <script src="assets/tool-guide.js" defer></script>
     <style>
       :root { color-scheme: light; --ink: #172033; --muted: #667085; --primary: #5b5ce2; --primary-dark: #4143bd; --line: rgba(91, 92, 226, .14); --surface: rgba(255, 255, 255, .82); --shadow: 0 24px 70px rgba(65, 67, 189, .14); }
       * { box-sizing: border-box; }
@@ -75,7 +78,7 @@
   <body>
     <header>
       <nav class="shell nav" aria-label="主导航">
-        <a class="brand" href="index.html"><span class="brand-mark">云</span><span>云云工具箱</span></a>
+        <a class="brand" href="index.html"><span class="brand-mark">云</span><span>云云子的工具箱</span></a>
         <div class="nav-links"><a href="#about">关于</a><a href="#tools">全部工具</a></div>
       </nav>
     </header>
@@ -85,17 +88,17 @@
         <div class="hero-panel">
           <div class="hero-copy">
             <div class="eyebrow">✦ 轻量 · 实用 · 打开即用</div>
-            <h1>把小麻烦<br><span class="gradient-text">变成小工具</span></h1>
-            <p>这里收集云云制作的网页工具。无需安装软件，打开浏览器就能使用；更多学习、办公和生活工具会持续加入。</p>
+            <h1>云云子的<br><span class="gradient-text">工具箱</span></h1>
+            <p>把日常的小麻烦，变成打开就能用的小工具。无需安装软件，数据尽量留在你的浏览器里；这里会记录每一次真实、实用的成长。</p>
             <div class="actions">
               <a class="button primary" href="#tools">开始使用 <span aria-hidden="true">↓</span></a>
-              <a class="button secondary" href="https://github.com/yunzhengxing/gitwork">查看源代码</a>
+              <a class="button secondary" href="#tools">11 款工具全部免费</a>
             </div>
           </div>
           <a class="hero-art" href="#tools" aria-label="查看全部工具"><img src="assets/toolbox-hero.png" alt="漂浮在云端的透明数字工具箱插画"></a>
         </div>
         <div class="quick-facts" aria-label="网站特点">
-          <div class="fact"><strong>6 款</strong><span>当前可用工具</span></div>
+          <div class="fact"><strong>11 款</strong><span>当前可用工具</span></div>
           <div class="fact"><strong>0 安装</strong><span>浏览器打开即用</span></div>
           <div class="fact"><strong>持续更新</strong><span>新的小工具陆续加入</span></div>
         </div>
@@ -104,7 +107,7 @@
       <section class="shell tools" id="tools">
         <div class="section-heading">
           <div><h2>选择一个工具</h2><p>所有处理都在网页中完成，点击卡片即可开始。</p></div>
-          <span class="count" id="toolCount">共 6 款工具</span>
+          <span class="count" id="toolCount">共 11 款工具</span>
         </div>
         <div class="toolbar">
           <input class="search" id="search" type="search" placeholder="搜索工具，例如：姓名、Excel……" aria-label="搜索工具">
@@ -145,13 +148,38 @@
             <h3>多表合并总表助手</h3><p>统一关键字或按关系链分步关联多张表，也可以将多批数据直接追加成一张总表。</p>
             <a class="tool-link" href="multi-table-merger.html">打开工具 <span aria-hidden="true">→</span></a>
           </article>
+          <article class="tool-card" data-category="office" data-search="Excel 总表 拆分 分表 班级 分组 批量 导出 ZIP">
+            <div class="icon" aria-hidden="true">✂️</div><div class="tags"><span class="tag">办公</span><span class="tag">拆分</span></div>
+            <h3>总表拆分与批量导出</h3><p>按照班级、分组或任意字段拆分总表，可下载多工作表 Excel 或多个分表 ZIP。</p>
+            <a class="tool-link" href="table-splitter.html">打开工具 <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="tool-card" data-category="office" data-search="Excel 模板 收表 回执 汇总 老师 批量 表头 字段 映射 助学金">
+            <div class="icon" aria-hidden="true">📥</div><div class="tags"><span class="tag">办公</span><span class="tag">收表</span></div>
+            <h3>模板收表汇总助手</h3><p>按标准模板批量汇总老师交回的表格，自动识别标题和不同表头，并列出缺失、重复与字段映射问题。</p>
+            <a class="tool-link" href="template-collection-merger.html">打开工具 <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="tool-card" data-category="office" data-search="Excel 名单 版本 对比 差异 新增 删除 变化 重复 学号">
+            <div class="icon" aria-hidden="true">🔍</div><div class="tags"><span class="tag">办公</span><span class="tag">对比</span></div>
+            <h3>名单版本对比助手</h3><p>比较新旧两份名单，按学号或组合关键字找出新增、删除、字段变化以及重复和匹配问题。</p>
+            <a class="tool-link" href="table-diff-helper.html">打开工具 <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="tool-card" data-category="office" data-search="Excel 表格 分类 统计 汇总 人数 占比 合计 平均值 班级 性别 状态 数据透视表">
+            <div class="icon" aria-hidden="true">📊</div><div class="tags"><span class="tag">办公</span><span class="tag">统计</span></div>
+            <h3>表格分类统计助手</h3><p>不用数据透视表，按班级、性别、状态等字段统计人数与占比，还能计算数值的合计、平均值、最大值和最小值。</p>
+            <a class="tool-link" href="table-summary-helper.html">打开工具 <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="tool-card" data-category="learning" data-search="Excel 成绩 分析 平均分 及格率 优秀率 排名 班级 对比 教学 学生">
+            <div class="icon" aria-hidden="true">📈</div><div class="tags"><span class="tag">学习</span><span class="tag">成绩</span></div>
+            <h3>成绩分析助手</h3><p>导入成绩表，自动计算各科平均分、及格率和优秀率，生成学生排名与班级对比，并导出完整分析结果。</p>
+            <a class="tool-link" href="grade-analysis-helper.html">打开工具 <span aria-hidden="true">→</span></a>
+          </article>
         </div>
         <div class="empty" id="empty">没有找到相关工具，试试其他关键词。</div>
-        <div class="notice"><span aria-hidden="true">🌱</span><div><b>工具箱还在成长</b><p>以后新增工具时，只需要复制一张工具卡片、修改名称与链接，就能自然扩展到这个首页中。</p></div></div>
+        <div class="notice"><span aria-hidden="true">🌱</span><div><b>免费公测，工具箱还在成长</b><p>所有工具均可免费使用，数据在浏览器本地处理。欢迎反馈问题；未经许可请勿复制、转载、镜像或转售本站代码与工具。</p></div></div>
       </section>
     </main>
 
-    <footer><div class="shell footer-row"><span>© 2026 云云工具箱 · 用简单网页解决日常问题</span><a href="https://github.com/yunzhengxing/gitwork">GitHub 项目主页 ↗</a></div></footer>
+    <footer><div class="shell footer-row"><span>© 2026 云云子的工具箱 · 免费使用不等于放弃著作权</span><span>请勿复制、镜像或转售</span></div></footer>
     <script>
       const cards = [...document.querySelectorAll('.tool-card')];
       const search = document.querySelector('#search');

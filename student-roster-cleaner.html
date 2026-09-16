@@ -4,7 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="在浏览器本地清洗学生名单，检查重复、缺失和手机号格式，并导出 Excel。">
-  <title>学生名单清洗器｜云云工具箱</title>
+  <title>学生名单清洗器｜云云子的工具箱</title>
+  <link rel="stylesheet" href="assets/tool-guide.css">
+  <script src="assets/toolbox-membership.js" defer></script>
+  <script src="assets/tool-guide.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
   <style>
     :root{color-scheme:light;--ink:#172033;--muted:#667085;--primary:#5b5ce2;--primary-dark:#4244bd;--line:#dde2f5;--surface:#fff;--soft:#f2f4ff;--ok:#15845b;--warn:#c56a17;--bad:#cf3d58;--shadow:0 22px 60px rgba(52,62,122,.12)}
@@ -14,7 +17,7 @@
   </style>
 </head>
 <body>
-  <header class="shell topbar"><a class="back" href="index.html">← 返回云云工具箱</a></header>
+  <header class="shell topbar"><a class="back" href="index.html">← 返回云云子的工具箱</a></header>
   <main class="shell">
     <section class="hero"><div><p class="eyebrow">班级管理 · EXCEL 工具</p><h1>学生名单清洗器</h1><p>导入名单后，既可以快速检查姓名、学号和手机号，也可以为身份证、日期、邮箱等字段设置高级规则。</p></div><div class="privacy">🔒 文件只在当前浏览器处理</div></section>
 
@@ -50,7 +53,7 @@
       <div class="actions"><button class="btn primary" id="downloadClean" type="button">下载清洗后的 Excel</button><button class="btn" id="downloadIssues" type="button">下载问题报告</button></div>
     </section>
   </main>
-  <footer>云云工具箱 · 本地处理，不保存名单数据</footer><div class="toast" id="toast"></div>
+  <footer>云云子的工具箱 · 本地处理，不保存名单数据</footer><div class="toast" id="toast"></div>
 
   <script>
     const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
