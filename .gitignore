@@ -1,0 +1,4 @@
+# Local browser profiles and visual QA output
+.chrome-*/
+.edge-*/
+help-preview.png
