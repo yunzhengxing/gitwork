@@ -19,7 +19,7 @@
     const notice = document.querySelector('.notice');
     if (notice && !document.querySelector('.yy-membership-strip')) {
       const content = config.mode === 'free'
-        ? '<div class="yy-membership-strip"><div><b>15 款工具全部免费公测</b><p>无需登录，表格继续在浏览器本地处理。欢迎使用和反馈；未经许可请勿复制、转载或转售本站代码与工具。</p></div><a href="#tools">立即使用</a></div>'
+        ? '<div class="yy-membership-strip"><div><b>16 款工具全部免费公测</b><p>无需登录，表格继续在浏览器本地处理。欢迎使用和反馈；未经许可请勿复制、转载或转售本站代码与工具。</p></div><a href="#tools">立即使用</a></div>'
         : '<div class="yy-membership-strip"><div><b>免费体验与会员工具分开提供</b><p>免费工具无需登录；会员工具计划通过邮箱验证码授权。当前为本地测试阶段，所有功能仍可直接打开。</p></div><a href="membership.html">查看开通流程</a></div>';
       notice.insertAdjacentHTML('beforebegin', content);
     }
