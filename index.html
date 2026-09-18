@@ -14,7 +14,7 @@
       html { scroll-behavior: smooth; }
       body { position: relative; margin: 0; min-height: 100vh; overflow-x: hidden; color: var(--ink); font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; background: radial-gradient(circle at 10% 8%, rgba(137, 210, 255, .34), transparent 30rem), radial-gradient(circle at 90% 18%, rgba(194, 154, 255, .26), transparent 28rem), #f7f9ff; }
       body::before { position: fixed; z-index: -2; inset: 0; content: ""; pointer-events: none; opacity: .42; background-image: linear-gradient(rgba(91,92,226,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(91,92,226,.055) 1px, transparent 1px); background-size: 42px 42px; mask-image: linear-gradient(to bottom, #000, transparent 72%); }
-      body::after { position: fixed; z-index: -1; width: 420px; height: 420px; left: var(--glow-x, 60%); top: var(--glow-y, 20%); content: ""; pointer-events: none; border-radius: 50%; opacity: .44; filter: blur(22px); transform: translate(-50%, -50%); background: radial-gradient(circle, rgba(106,111,245,.18), rgba(105,205,255,.06) 48%, transparent 70%); transition: left .16s linear, top .16s linear; }
+      #starTrail { position: fixed; z-index: 50; inset: 0; width: 100%; height: 100%; pointer-events: none; }
       a { color: inherit; }
       button, input { font: inherit; }
       .shell { width: min(1160px, calc(100% - 36px)); margin: 0 auto; }
@@ -95,10 +95,11 @@
       @media (max-width: 980px) { .nav-links { display: none; } }
       @media (max-width: 850px) { .hero-panel { grid-template-columns: 1fr; } .hero-copy { padding: 46px 28px 18px; } .hero-art { height: 300px; } .hero-art img { object-position: 62% center; } .tool-grid { grid-template-columns: repeat(2, 1fr); } }
       @media (max-width: 580px) { .shell { width: min(100% - 24px, 1160px); } .nav { min-height: 66px; } .brand { gap: 8px; font-size: 14px; } .brand-mark { width: 34px; height: 34px; } .nav-end { gap: 0; } .live-time { min-width: 112px; padding-left: 12px; text-align: right; } .live-time strong { font-size: 13px; } .live-time span { font-size: 9px; } .hero { padding-top: 26px; } .hero-panel { border-radius: 24px; } .hero-copy { padding: 36px 22px 14px; } .hero-copy > p { font-size: 15px; } .motto { align-items: flex-start; } .hero-art { height: 230px; } .quick-facts { grid-template-columns: 1fr; } .section-heading { align-items: start; flex-direction: column; } .tool-grid { grid-template-columns: 1fr; } .tool-card { min-height: 260px; } .footer-row { flex-direction: column; } }
-      @media (hover: none), (prefers-reduced-motion: reduce) { body::after { display: none; } .brand-mark::after { animation: none; } .tool-card, .tool-card:hover { --rx: 0deg !important; --ry: 0deg !important; transform: translateY(var(--lift, 0)); } .hero-art img { transform: scale(1.015); } * { scroll-behavior: auto !important; } }
+      @media (hover: none), (prefers-reduced-motion: reduce) { #starTrail { display: none; } .brand-mark::after { animation: none; } .tool-card, .tool-card:hover { --rx: 0deg !important; --ry: 0deg !important; transform: translateY(var(--lift, 0)); } .hero-art img { transform: scale(1.015); } * { scroll-behavior: auto !important; } }
     </style>
   </head>
   <body>
+    <canvas id="starTrail" aria-hidden="true"></canvas>
     <header>
       <nav class="shell nav" aria-label="主导航">
         <a class="brand" href="index.html"><span class="brand-mark">云</span><span>云云子的工具箱</span></a>
@@ -259,9 +260,89 @@
       }, 4200);
       const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (finePointer) {
+        const canvas = document.querySelector('#starTrail');
+        const ctx = canvas.getContext('2d');
+        const stars = [];
+        const colors = ['108,211,255', '120,126,255', '180,126,255', '255,255,255'];
+        let animationFrame = 0;
+        let lastX = -100;
+        let lastY = -100;
+        function resizeTrail() {
+          const ratio = Math.min(devicePixelRatio || 1, 2);
+          canvas.width = Math.round(innerWidth * ratio);
+          canvas.height = Math.round(innerHeight * ratio);
+          canvas.style.width = `${innerWidth}px`;
+          canvas.style.height = `${innerHeight}px`;
+          ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        }
+        function createStar(x, y, featured = false) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = featured ? .28 + Math.random() * .38 : .18 + Math.random() * .55;
+          stars.push({
+            x: x + (Math.random() - .5) * (featured ? 5 : 13),
+            y: y + (Math.random() - .5) * (featured ? 5 : 13),
+            vx: Math.cos(angle) * speed - .14,
+            vy: Math.sin(angle) * speed + .05,
+            size: featured ? 3.2 + Math.random() * 2.2 : .9 + Math.random() * 2.2,
+            life: 1,
+            fade: featured ? .018 + Math.random() * .008 : .024 + Math.random() * .018,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            star: featured || Math.random() > .48,
+            spin: Math.random() * Math.PI
+          });
+          if (stars.length > 92) stars.splice(0, stars.length - 92);
+        }
+        function drawStar(star) {
+          const alpha = Math.max(0, star.life);
+          ctx.save();
+          ctx.translate(star.x, star.y);
+          ctx.rotate(star.spin);
+          ctx.globalAlpha = alpha;
+          ctx.shadowColor = `rgba(${star.color},${alpha})`;
+          ctx.shadowBlur = star.star ? 9 : 6;
+          ctx.fillStyle = `rgba(${star.color},${Math.min(1, alpha * 1.15)})`;
+          if (star.star) {
+            const r = star.size;
+            ctx.beginPath();
+            ctx.moveTo(0, -r * 2.4);
+            ctx.quadraticCurveTo(r * .34, -r * .34, r * 2.4, 0);
+            ctx.quadraticCurveTo(r * .34, r * .34, 0, r * 2.4);
+            ctx.quadraticCurveTo(-r * .34, r * .34, -r * 2.4, 0);
+            ctx.quadraticCurveTo(-r * .34, -r * .34, 0, -r * 2.4);
+            ctx.fill();
+          } else {
+            ctx.beginPath();
+            ctx.arc(0, 0, star.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+        function animateTrail() {
+          ctx.clearRect(0, 0, innerWidth, innerHeight);
+          ctx.globalCompositeOperation = 'lighter';
+          for (let i = stars.length - 1; i >= 0; i -= 1) {
+            const star = stars[i];
+            star.x += star.vx;
+            star.y += star.vy;
+            star.vy += .006;
+            star.spin += .012;
+            star.life -= star.fade;
+            if (star.life <= 0) stars.splice(i, 1);
+            else drawStar(star);
+          }
+          ctx.globalCompositeOperation = 'source-over';
+          animationFrame = stars.length ? requestAnimationFrame(animateTrail) : 0;
+        }
+        resizeTrail();
+        addEventListener('resize', resizeTrail, { passive: true });
         document.addEventListener('pointermove', (event) => {
-          document.body.style.setProperty('--glow-x', `${event.clientX}px`);
-          document.body.style.setProperty('--glow-y', `${event.clientY}px`);
+          const distance = Math.hypot(event.clientX - lastX, event.clientY - lastY);
+          if (distance < 3) return;
+          const amount = Math.min(5, Math.max(2, Math.round(distance / 8)));
+          for (let i = 0; i < amount; i += 1) createStar(event.clientX, event.clientY, i === 0 && Math.random() > .34);
+          lastX = event.clientX;
+          lastY = event.clientY;
+          if (!animationFrame) animationFrame = requestAnimationFrame(animateTrail);
         }, { passive: true });
         const heroPanel = document.querySelector('.hero-panel');
         heroPanel.addEventListener('pointermove', (event) => {
