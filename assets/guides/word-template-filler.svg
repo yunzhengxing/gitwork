@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820">
+  <defs><linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#eef2ff"/><stop offset="1" stop-color="#ecfeff"/></linearGradient><filter id="s"><feDropShadow dx="0" dy="12" stdDeviation="18" flood-opacity=".12"/></filter></defs>
+  <rect width="1400" height="820" rx="28" fill="url(#bg)"/>
+  <text x="90" y="90" font-family="Microsoft YaHei,Arial" font-weight="700" font-size="42" fill="#172554">Word 模板批量填充助手</text>
+  <text x="90" y="135" font-family="Microsoft YaHei,Arial" font-size="22" fill="#475569">一个模板 + 一张 Excel，批量生成每个人的专属 Word</text>
+  <g filter="url(#s)"><rect x="90" y="190" width="560" height="245" rx="24" fill="white"/><rect x="750" y="190" width="560" height="245" rx="24" fill="white"/></g>
+  <circle cx="160" cy="270" r="38" fill="#e0e7ff"/><text x="145" y="282" font-family="Arial" font-size="34">📝</text>
+  <text x="225" y="255" font-family="Microsoft YaHei,Arial" font-weight="700" font-size="28" fill="#1e293b">导入 Word 模板</text><text x="225" y="300" font-family="Microsoft YaHei,Arial" font-size="20" fill="#64748b">在变化位置写入 {{姓名}}、{{班级}}</text>
+  <rect x="135" y="350" width="470" height="52" rx="14" fill="#4f46e5"/><text x="305" y="384" font-family="Microsoft YaHei,Arial" font-weight="700" font-size="20" fill="white">选择 .docx 模板</text>
+  <circle cx="820" cy="270" r="38" fill="#cffafe"/><text x="805" y="282" font-family="Arial" font-size="34">📊</text>
+  <text x="885" y="255" font-family="Microsoft YaHei,Arial" font-weight="700" font-size="28" fill="#1e293b">导入 Excel 数据</text><text x="885" y="300" font-family="Microsoft YaHei,Arial" font-size="20" fill="#64748b">每一行数据生成一份 Word</text>
+  <rect x="795" y="350" width="470" height="52" rx="14" fill="#0891b2"/><text x="970" y="384" font-family="Microsoft YaHei,Arial" font-weight="700" font-size="20" fill="white">选择数据表</text>
+  <g filter="url(#s)"><rect x="90" y="490" width="1220" height="235" rx="24" fill="white"/></g>
+  <text x="135" y="550" font-family="Microsoft YaHei,Arial" font-weight="700" font-size="27" fill="#1e293b">推荐流程</text>
+  <g font-family="Microsoft YaHei,Arial" font-size="20" fill="#334155"><circle cx="165" cy="625" r="30" fill="#e0e7ff"/><text x="158" y="633" font-weight="700">1</text><text x="210" y="633">自动对应字段</text><path d="M370 625h80" stroke="#94a3b8" stroke-width="3"/>
+  <circle cx="490" cy="625" r="30" fill="#e0e7ff"/><text x="483" y="633" font-weight="700">2</text><text x="535" y="633">检查前 5 份预览</text><path d="M740 625h80" stroke="#94a3b8" stroke-width="3"/>
+  <circle cx="860" cy="625" r="30" fill="#cffafe"/><text x="853" y="633" font-weight="700">3</text><text x="905" y="633">生成第一份测试</text><path d="M1100 625h70" stroke="#94a3b8" stroke-width="3"/>
+  <circle cx="1210" cy="625" r="30" fill="#d1fae5"/><text x="1203" y="633" font-weight="700">4</text><text x="1162" y="685">批量 ZIP</text></g>
+</svg>
