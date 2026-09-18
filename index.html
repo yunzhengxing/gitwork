@@ -87,6 +87,21 @@
       .notice { display: grid; grid-template-columns: auto 1fr; gap: 16px; margin-top: 24px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: linear-gradient(135deg, rgba(238, 240, 255, .9), rgba(235, 249, 255, .9)); }
       .notice b { display: block; margin-bottom: 5px; }
       .notice p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+      .beta-section { padding: 18px 0 12px; scroll-margin-top: 84px; }
+      .beta-panel { position: relative; display: grid; grid-template-columns: 1.15fr .85fr; gap: 28px; overflow: hidden; padding: 34px; color: #fff; border-radius: 26px; background: linear-gradient(130deg, #4143bd, #6659db 55%, #168fca); box-shadow: 0 24px 58px rgba(65,67,189,.22); }
+      .beta-panel::after { position: absolute; width: 310px; height: 310px; right: -90px; top: -150px; content: ""; border: 1px solid rgba(255,255,255,.24); border-radius: 50%; box-shadow: 0 0 0 42px rgba(255,255,255,.05), 0 0 0 88px rgba(255,255,255,.035); }
+      .beta-copy, .beta-side { position: relative; z-index: 1; }
+      .beta-kicker { display: inline-flex; margin-bottom: 12px; padding: 6px 10px; font-size: 12px; font-weight: 800; border: 1px solid rgba(255,255,255,.32); border-radius: 999px; background: rgba(255,255,255,.12); }
+      .beta-panel h2 { margin: 0 0 12px; font-size: clamp(28px,4vw,42px); letter-spacing: -.035em; }
+      .beta-panel p { margin: 0; color: rgba(255,255,255,.82); line-height: 1.8; }
+      .beta-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+      .beta-action { min-height: 44px; padding: 0 17px; color: #fff; font-weight: 800; border: 1px solid rgba(255,255,255,.3); border-radius: 12px; cursor: pointer; background: rgba(255,255,255,.12); text-decoration: none; }
+      a.beta-action { display: inline-flex; align-items: center; }
+      .beta-action.primary { color: #4143bd; border-color: #fff; background: #fff; }
+      .beta-side { display: grid; align-content: center; gap: 12px; padding: 21px; border: 1px solid rgba(255,255,255,.2); border-radius: 18px; background: rgba(18,24,77,.18); backdrop-filter: blur(10px); }
+      .beta-side strong { font-size: 15px; }
+      .beta-group { font-size: 28px; font-weight: 900; letter-spacing: .06em; }
+      .beta-side small { color: rgba(255,255,255,.68); line-height: 1.65; }
       footer { padding: 28px 0 38px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
       .footer-row { display: flex; justify-content: space-between; gap: 20px; }
       footer a { color: var(--primary-dark); text-decoration: none; }
@@ -96,7 +111,7 @@
       .back-top:focus-visible { outline: 3px solid rgba(91,92,226,.24); outline-offset: 3px; }
       @keyframes brandShine { 0%,68% { transform: translateX(-48px) rotate(28deg); } 82%,100% { transform: translateX(50px) rotate(28deg); } }
       @media (max-width: 980px) { .nav-links { display: none; } }
-      @media (max-width: 850px) { .hero-panel { grid-template-columns: 1fr; } .hero-copy { padding: 46px 28px 18px; } .hero-art { height: 300px; } .hero-art img { object-position: 62% center; } .tool-grid { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 850px) { .hero-panel, .beta-panel { grid-template-columns: 1fr; } .hero-copy { padding: 46px 28px 18px; } .hero-art { height: 300px; } .hero-art img { object-position: 62% center; } .tool-grid { grid-template-columns: repeat(2, 1fr); } }
       @media (max-width: 580px) { .shell { width: min(100% - 24px, 1160px); } .nav { min-height: 66px; } .brand { gap: 8px; font-size: 14px; } .brand-mark { width: 34px; height: 34px; } .nav-end { gap: 0; } .live-time { min-width: 112px; padding-left: 12px; text-align: right; } .live-time strong { font-size: 13px; } .live-time span { font-size: 9px; } .hero { padding-top: 26px; } .hero-panel { border-radius: 24px; } .hero-copy { padding: 36px 22px 14px; } .hero-copy > p { font-size: 15px; } .motto { align-items: flex-start; } .hero-art { height: 230px; } .quick-facts { grid-template-columns: 1fr; } .section-heading { align-items: start; flex-direction: column; } .tool-grid { grid-template-columns: 1fr; } .tool-card { min-height: 260px; } .footer-row { flex-direction: column; } }
       @media (hover: none), (prefers-reduced-motion: reduce) { #starTrail { display: none; } .brand-mark::after { animation: none; } .tool-card, .tool-card:hover { --rx: 0deg !important; --ry: 0deg !important; transform: translateY(var(--lift, 0)); } .hero-art img { transform: scale(1.015); } * { scroll-behavior: auto !important; } }
     </style>
@@ -107,7 +122,7 @@
     <header>
       <nav class="shell nav" aria-label="主导航">
         <a class="brand" href="index.html"><span class="brand-mark">云</span><span>云云子的工具箱</span></a>
-        <div class="nav-end"><div class="nav-links"><a href="#about">关于</a><a href="#tools">全部工具</a><a href="help.html">使用教程</a></div><div class="live-time" aria-live="polite"><strong id="clockTime">--:--:--</strong><span id="clockDate">正在读取时间</span></div></div>
+        <div class="nav-end"><div class="nav-links"><a href="#about">关于</a><a href="#beta">公测计划</a><a href="#tools">全部工具</a><a href="help.html">使用教程</a></div><div class="live-time" aria-live="polite"><strong id="clockTime">--:--:--</strong><span id="clockDate">正在读取时间</span></div></div>
       </nav>
     </header>
 
@@ -130,6 +145,18 @@
           <div class="fact"><strong>18 款</strong><span>当前可用工具</span></div>
           <div class="fact"><strong>0 安装</strong><span>浏览器打开即用</span></div>
           <div class="fact"><strong>持续更新</strong><span>新的小工具陆续加入</span></div>
+        </div>
+      </section>
+
+      <section class="shell beta-section" id="beta">
+        <div class="beta-panel">
+          <div class="beta-copy">
+            <span class="beta-kicker">PUBLIC BETA · 公开测试</span>
+            <h2>来一起把工具箱打磨得更好</h2>
+            <p>请挑一个与你工作有关的工具，使用脱敏或虚构数据走完一遍流程。遇到不会用、结果不对或还缺功能，都欢迎告诉我。真实使用中的问题，会决定下一步优先开发什么。</p>
+            <div class="beta-actions"><a class="beta-action primary" href="beta.html">进入公测中心</a><button class="beta-action" id="copyGroup" type="button">复制 QQ 群号</button></div>
+          </div>
+          <div class="beta-side"><strong>公测交流群</strong><span class="beta-group">1030322503</span><small>打开 QQ 搜索群号加入。反馈时请写明：工具名称、操作步骤、期待结果、实际结果；涉及学生信息时请先脱敏。</small></div>
         </div>
       </section>
 
@@ -239,7 +266,7 @@
           </article>
         </div>
         <div class="empty" id="empty">没有找到相关工具，试试其他关键词。</div>
-        <div class="notice"><span aria-hidden="true">🌱</span><div><b>免费公测，工具箱还在成长</b><p>所有工具均可免费使用，数据在浏览器本地处理。欢迎反馈问题；未经许可请勿复制、转载、镜像或转售本站代码与工具。</p></div></div>
+        <div class="notice"><span aria-hidden="true">🌱</span><div><b>免费公测，加入 QQ 群 1030322503</b><p>请主动测试你常用的板块，并到公测中心记录结果。匿名统计接通后只记录各工具页面的访问频率，不读取或上传你导入的表格内容。</p></div></div>
       </section>
     </main>
 
@@ -256,6 +283,7 @@
       const clockDate = document.querySelector('#clockDate');
       const mottoText = document.querySelector('#mottoText');
       const backTop = document.querySelector('#backTop');
+      const copyGroup = document.querySelector('#copyGroup');
       const mottos = ['让复杂的工作，变成清楚的下一步。', '把重复交给工具，把时间留给重要的人。', '每一个小工具，都是一次真实的成长。', '今天少一点繁琐，明天多一点从容。'];
       let mottoIndex = 0;
       function updateClock() {
@@ -264,6 +292,10 @@
         clockDate.textContent = new Intl.DateTimeFormat('zh-CN', { month: 'long', day: 'numeric', weekday: 'short' }).format(now);
       }
       updateClock();
+      copyGroup?.addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText('1030322503'); copyGroup.textContent = '已复制：1030322503'; }
+        catch { copyGroup.textContent = '群号：1030322503'; }
+      });
       setInterval(updateClock, 1000);
       setInterval(() => {
         mottoText.classList.add('switching');

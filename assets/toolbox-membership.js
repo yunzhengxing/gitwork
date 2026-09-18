@@ -2,6 +2,15 @@ window.YY_TOOLBOX = {
   brand: '云云子的工具箱',
   mode: 'free',
   stage: '免费公测中',
+  beta: {
+    group: '1030322503',
+    page: 'beta.html',
+    storageKey: 'yy-beta-progress-v1'
+  },
+  analytics: {
+    provider: 'cloudflare',
+    token: ''
+  },
   memberUrl: '',
   contactEmail: '',
   contactWechat: '',

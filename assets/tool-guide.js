@@ -3,6 +3,15 @@
   if (!config) return;
   const file = location.pathname.split('/').pop() || 'index.html';
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  function enableAnalytics() {
+    const token = config.analytics?.token;
+    if (!token || document.querySelector('script[data-cf-beacon]')) return;
+    const beacon = document.createElement('script');
+    beacon.defer = true;
+    beacon.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+    beacon.dataset.cfBeacon = JSON.stringify({ token });
+    document.head.appendChild(beacon);
+  }
   function membershipUrl() { return file === 'index.html' ? 'membership.html' : 'membership.html'; }
   function decorateHome() {
     const nav = document.querySelector('.nav-links');
@@ -29,7 +38,7 @@
     const steps = tool.steps.map((step, index) => `<div class="yy-guide-step"><b>${index + 1}</b><span>${escapeHtml(step)}</span></div>`).join('');
     const tips = tool.tips.map((tip) => `<li>${escapeHtml(tip)}</li>`).join('');
     const guideId = file.replace(/\.html$/i, '');
-    document.body.insertAdjacentHTML('beforeend', `<button class="yy-guide-launch ${tool.tier}" type="button"><span>使用说明</span><small>${tierName}</small></button><div class="yy-guide-mask" role="dialog" aria-modal="true" aria-label="${escapeHtml(tool.name)}使用说明"><section class="yy-guide-dialog"><div class="yy-guide-head"><div><span class="yy-tier ${tool.tier}">${tierName}</span><h2>${escapeHtml(tool.name)}怎么用</h2><p>按照下面的顺序操作，重要结果下载后再关闭页面。</p></div><button class="yy-guide-close" type="button" aria-label="关闭">×</button></div><div class="yy-guide-steps">${steps}</div><div class="yy-guide-tips"><strong>使用前注意</strong><ul>${tips}</ul></div><div class="yy-guide-actions"><button class="yy-guide-button primary yy-guide-done" type="button">开始使用</button><a class="yy-guide-button" href="help.html#${guideId}">查看详细图文教程</a>${tool.tier === 'member' ? `<a class="yy-guide-button" href="${membershipUrl()}">了解会员开通</a>` : ''}<a class="yy-guide-button" href="index.html">返回工具箱</a></div></section></div>`);
+    document.body.insertAdjacentHTML('beforeend', `<button class="yy-guide-launch ${tool.tier}" type="button"><span>使用说明</span><small>${tierName}</small></button><div class="yy-guide-mask" role="dialog" aria-modal="true" aria-label="${escapeHtml(tool.name)}使用说明"><section class="yy-guide-dialog"><div class="yy-guide-head"><div><span class="yy-tier ${tool.tier}">${tierName}</span><h2>${escapeHtml(tool.name)}怎么用</h2><p>按照下面的顺序操作，重要结果下载后再关闭页面。</p></div><button class="yy-guide-close" type="button" aria-label="关闭">×</button></div><div class="yy-guide-steps">${steps}</div><div class="yy-guide-tips"><strong>使用前注意</strong><ul>${tips}</ul></div><div class="yy-guide-actions"><button class="yy-guide-button primary yy-guide-done" type="button">开始使用</button><a class="yy-guide-button" href="help.html#${guideId}">查看详细图文教程</a><a class="yy-guide-button" href="${config.beta?.page || 'beta.html'}?tool=${encodeURIComponent(file)}">完成后反馈</a>${tool.tier === 'member' ? `<a class="yy-guide-button" href="${membershipUrl()}">了解会员开通</a>` : ''}<a class="yy-guide-button" href="index.html">返回工具箱</a></div></section></div>`);
     const mask = document.querySelector('.yy-guide-mask');
     const open = () => mask.classList.add('show');
     const close = () => { mask.classList.remove('show'); try { localStorage.setItem(`yy-guide-seen:${file}`, '1'); } catch {} };
@@ -78,6 +87,7 @@
     const footer = document.querySelector('footer');
     if (footer && !footer.querySelector('.yy-brand-footer')) footer.insertAdjacentHTML('beforeend', '<div class="yy-brand-footer"><b>云云子工具箱</b><span>把重复工作交给工具，把时间留给重要的人和事。</span></div>');
   }
+  enableAnalytics();
   if (file === 'index.html') decorateHome();
   else if (config.tools[file]) { decorateToolBrand(); buildGuide(config.tools[file]); }
 })();
